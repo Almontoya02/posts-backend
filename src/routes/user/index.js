@@ -1,6 +1,6 @@
 const express = require('express')
 const router = new express.Router()
-const { registerUser,loginUser} = require('./utils')
+const { registerUser,loginUser,getOneUser,updateImg} = require('./utils')
 
 router.post("/user/register", async(req,res)=>{
     try{
@@ -31,6 +31,7 @@ router.post("/user/register", async(req,res)=>{
 
 })
 
+
 router.post("/user/login", async(req,res)=>{
     try{
         const request = req.body
@@ -54,6 +55,50 @@ router.post("/user/login", async(req,res)=>{
             data:{error:error.toString()},
             status:false,
             message:"Error" 
+        })
+    }
+})
+
+router.patch("/user/update",async(req,res)=>{
+    try{
+        const request = req.body
+        const user = await updateImg(
+            request.nickname,
+            request.imageUrl
+
+        )
+        res.status(200).send({
+            status: true,
+            message: "Actualizado con éxito",
+            data: {user}
+        })
+    }catch(error){
+        res.status(500).send({
+            status: false,
+            message: "Update failed",
+            data: { error: error.toString() }
+        })
+    }
+})
+
+router.get("/user/:userNickname",async(req,res)=>{
+    try{
+        const request = req.body
+        const params = req.params
+        const user = await getOneUser(
+            params.userNickname
+
+        )
+        res.status(200).send({
+            status: true,
+            message: "Usuario obtenido con éxito",
+            data: {user}
+        })
+    }catch(error){
+        res.status(500).send({
+            status: false,
+            message: "Get failed",
+            data: { error: error.toString() }
         })
     }
 })

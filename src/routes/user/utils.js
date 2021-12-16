@@ -11,7 +11,8 @@ async function registerUser(email,nickname,password){
             email,
             nickname,
             password:hashedPassword,
-            token
+            token,
+            imageUrl:""
         }).catch((error)=>{
             console.log("Error",error)
             throw new Error('Error to register'+error )
@@ -23,6 +24,15 @@ async function registerUser(email,nickname,password){
     }
 }
 
+async function getOneUser(nickname){
+    const user = await User.findOne({nickname}).catch((error)=>{
+        throw new Error("User not found")
+    })
+    if(user==null){
+        throw new Error("User not found")
+    }
+    return {nickname,email:user.email,imageUrl:user.imageUrl}
+}
 async function loginUser(email,password){
     
     const user = await User.findOne({email}).catch((error)=>{
@@ -43,6 +53,17 @@ async function loginUser(email,password){
     return {email,nickname:user.nickname,token,imageUrl:user.imageUrl}
 
 }
+async function updateImg(nickname,imageUrl){
+    const user = await User.findOne({nickname}).catch((error)=>{
+        throw new Error("User not found")
+    })
+    if(user==null){
+        throw new Error("User not found")
+    }
+    user.imageUrl=imageUrl
+    user.save()
+    return {nickname:user.nickname,imageUrl:imageUrl}
+}
 async function hashPassword(password){
     return await bcrypt.hash(password,5)
 }
@@ -56,4 +77,4 @@ function createToken(email,nickname){
     return token
 }
 
-module.exports={registerUser,loginUser}
+module.exports={registerUser,loginUser,getOneUser,updateImg}

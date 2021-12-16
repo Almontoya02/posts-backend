@@ -24,7 +24,12 @@ const userSchema = new mongoose.Schema({
     },
     token:{
         type:String,
+    },
+    imageUrl:{
+        type:String,
+        trim:true,
     }
+
 
 })
 
